@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+// Asegúrate de que estas rutas sean correctas según tu carpeta
 import { getProducts } from '../../src/services/api';
 import MyButton from '../../src/components/Mybutton';
 
@@ -13,8 +14,20 @@ export default function HomeScreen() {
   }, []);
 
   const loadData = async () => {
-    const data = await getProducts();
-    if (data) setProducts(data);
+    try {
+      const data = await getProducts();
+      console.log("DATOS LLEGANDO:", data); // Mira esto en la terminal para ver qué llega
+      
+      // Verificamos que sea un arreglo antes de guardarlo
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        console.log("La API no devolvió una lista válida");
+        setProducts([]);
+      }
+    } catch (e) {
+      console.error("Error cargando datos:", e);
+    }
   };
 
   return (
@@ -22,15 +35,16 @@ export default function HomeScreen() {
       <Text style={styles.header}>Examen Móviles</Text>
       <FlatList
         data={products}
-        keyExtractor={(item) => item.id.toString()}
+        // CORRECCIÓN: Si no hay ID, usa el índice (0, 1, 2...) para que no falle
+        keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity 
             style={styles.card}
-            // Navegación enviando parámetros
             onPress={() => router.push({ pathname: "/detail", params: { ...item } })}
           >
-            <Text style={styles.title}>{item.name}</Text>
-            <Text style={styles.price}>${item.price}</Text>
+            {/* CORRECCIÓN: Signos de interrogación para evitar errores si viene vacío */}
+            <Text style={styles.title}>{item?.name || 'Producto sin nombre'}</Text>
+            <Text style={styles.price}>${item?.price || 0}</Text>
           </TouchableOpacity>
         )}
       />
