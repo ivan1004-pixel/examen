@@ -1,26 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
-  }
+  private products = [
+    { id: 1, name: 'Laptop Gamer', price: 1500, description: 'Alta potencia gráfica' },
+    { id: 2, name: 'Smartphone Pro', price: 900, description: 'Cámara de 108MP' },
+    { id: 3, name: 'Monitor 4K', price: 400, description: 'Panel IPS 144Hz' },
+  ];
 
   findAll() {
-    return `This action returns all products`;
+    return this.products;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} product`;
+    return this.products.find(p => p.id === id);
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} product`;
-  }
+  // Métodos de relleno necesarios
+  create(createProductDto: any) { return 'Esta acción añade un producto'; }
+  update(id: number, updateProductDto: any) { return `Esta acción actualiza el producto #${id}`; }
+  remove(id: number) { return `Esta acción elimina el producto #${id}`; }
 }
