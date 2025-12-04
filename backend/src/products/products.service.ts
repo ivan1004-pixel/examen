@@ -17,7 +17,23 @@ export class ProductsService {
   }
 
   // Métodos de relleno necesarios
-  create(createProductDto: any) { return 'Esta acción añade un producto'; }
+  
+  create(createProductDto: any) {
+    const newId = this.products.length > 0 ? this.products[this.products.length - 1].id + 1 : 1;
+    
+    const newProduct = {
+      id: newId,
+      name: createProductDto.name,
+      price: createProductDto.price,
+      description: createProductDto.description || 'Sin descripción',
+      // Truco: Si mandan foto, la usamos, si no, ponemos una genérica
+      image: createProductDto.image || null 
+    };
+
+    this.products.push(newProduct);
+    return newProduct;
+  }
+  
   update(id: number, updateProductDto: any) { return `Esta acción actualiza el producto #${id}`; }
   remove(id: number) { return `Esta acción elimina el producto #${id}`; }
 }
